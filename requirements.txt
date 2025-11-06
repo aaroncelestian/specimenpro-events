@@ -1,0 +1,10 @@
+# SpecimenPro Event Manager Requirements
+# This application uses only Python standard library modules
+
+# No external dependencies required
+# The application uses tkinter which comes built-in with Python
+
+# For development and testing (optional):
+# pytest>=7.0.0
+# black>=22.0.0
+# flake8>=4.0.0

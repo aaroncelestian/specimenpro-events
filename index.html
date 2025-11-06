@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpecimenPro Events</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .app-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .events-container {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .event-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .event-title {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .event-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .event-status.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .event-status.upcoming {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .event-status.ended {
+            background: #6b7280;
+            color: white;
+        }
+
+        .event-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 1rem;
+            color: #1f2937;
+        }
+
+        .event-description {
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .specimens-section, .badges-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .specimens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .specimen-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: background 0.2s;
+        }
+
+        .specimen-card:hover {
+            background: #f3f4f6;
+        }
+
+        .specimen-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .specimen-locality {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .specimen-description {
+            font-size: 0.95rem;
+            color: #4b5563;
+            margin-bottom: 10px;
+        }
+
+        .specimen-photo {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .specimen-photo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .specimen-composition {
+            font-size: 0.9rem;
+            color: #374151;
+            margin: 10px 0;
+            padding: 8px;
+            background: #f3f4f6;
+            border-radius: 5px;
+        }
+
+        .specimen-facts {
+            font-size: 0.85rem;
+            color: #667eea;
+            margin: 10px 0;
+            padding: 10px;
+            background: #eef2ff;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .specimen-story {
+            font-size: 0.9rem;
+            color: #1f2937;
+            margin: 15px 0;
+            padding: 12px;
+            background: #fef3c7;
+            border-radius: 5px;
+            border-left: 3px solid #f59e0b;
+            line-height: 1.6;
+        }
+
+        .specimen-audio {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .specimen-audio strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .specimen-audio audio {
+            width: 100%;
+            height: 32px;
+        }
+
+        .rarity-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .rarity-common {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .rarity-uncommon {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .rarity-rare {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .rarity-legendary {
+            background: #fce7f3;
+            color: #831843;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .badge-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .badge-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .badge-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            padding: 50px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .event-title {
+                font-size: 1.5rem;
+            }
+
+            .specimens-grid, .badges-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 SpecimenPro Events</h1>
+            <p>Discover and collect virtual mineral specimens at events near you</p>
+            <a href="https://aaroncelestian.github.io/SpecimenPro-Webpage/" class="app-link">Visit SpecimenPro Website</a>
+        </header>
+
+        <div id="events-container" class="events-container">
+            <div class="loading">Loading events...</div>
+        </div>
+
+        <footer>
+            <p>Part of the <a href="https://aaroncelestian.github.io/SpecimenPro-Webpage/">SpecimenPro</a> ecosystem</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Scan QR codes at participating events to collect specimens in the SpecimenPro iOS app</p>
+        </footer>
+    </div>
+
+    <script>
+        async function loadEvents() {
+            const container = document.getElementById('events-container');
+            
+            try {
+                const response = await fetch('events.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load events');
+                }
+                
+                const data = await response.json();
+                
+                if (!data.events || data.events.length === 0) {
+                    container.innerHTML = '<div class="error">No events available at this time.</div>';
+                    return;
+                }
+                
+                container.innerHTML = data.events.map(event => createEventCard(event)).join('');
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                container.innerHTML = '<div class="error">Error loading events. Please try again later.</div>';
+            }
+        }
+
+        function createEventCard(event) {
+            const startDate = new Date(event.startDate);
+            const endDate = new Date(event.endDate);
+            const now = new Date();
+            
+            let status = event.status;
+            if (now < startDate) status = 'upcoming';
+            else if (now > endDate) status = 'ended';
+            
+            return `
+                <div class="event-card">
+                    <div class="event-header">
+                        <h2 class="event-title">${escapeHtml(event.title)}</h2>
+                        <span class="event-status ${status}">${status}</span>
+                    </div>
+                    
+                    <div class="event-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Type</span>
+                            <span class="meta-value">${escapeHtml(event.type)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Location</span>
+                            <span class="meta-value">${escapeHtml(event.location)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Start Date</span>
+                            <span class="meta-value">${formatDate(startDate)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">End Date</span>
+                            <span class="meta-value">${formatDate(endDate)}</span>
+                        </div>
+                    </div>
+                    
+                    <p class="event-description">${escapeHtml(event.description)}</p>
+                    
+                    ${event.specimens && event.specimens.length > 0 ? `
+                        <div class="specimens-section">
+                            <h3 class="section-title">Specimens to Collect</h3>
+                            <div class="specimens-grid">
+                                ${event.specimens.map(specimen => createSpecimenCard(specimen)).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${event.badges && event.badges.length > 0 ? `
+                        <div class="badges-section">
+                            <h3 class="section-title">Badges to Earn</h3>
+                            <div class="badges-grid">
+                                ${event.badges.map(badge => createBadgeCard(badge)).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function createSpecimenCard(specimen) {
+            return `
+                <div class="specimen-card">
+                    <div class="specimen-name">${escapeHtml(specimen.name)}</div>
+                    <div class="specimen-locality">📍 ${escapeHtml(specimen.locality)}</div>
+                    <div class="specimen-description">${escapeHtml(specimen.description)}</div>
+                    ${specimen.rarity ? `<span class="rarity-badge rarity-${specimen.rarity}">${specimen.rarity}</span>` : ''}
+                    
+                    ${specimen.photoUrl ? `
+                        <div class="specimen-photo">
+                            <img src="${escapeHtml(specimen.photoUrl)}" alt="${escapeHtml(specimen.name)}" onerror="this.style.display='none'">
+                        </div>
+                    ` : ''}
+                    
+                    ${specimen.composition ? `
+                        <div class="specimen-composition">
+                            <strong>Composition:</strong> ${escapeHtml(specimen.composition)}
+                        </div>
+                    ` : ''}
+                    
+                    ${specimen.funFacts ? `
+                        <div class="specimen-facts">
+                            <strong>Fun Facts:</strong><br>
+                            ${escapeHtml(specimen.funFacts).replace(/\n/g, '<br>')}
+                        </div>
+                    ` : ''}
+                    
+                    ${specimen.story ? `
+                        <div class="specimen-story">
+                            <strong>Story:</strong><br>
+                            ${escapeHtml(specimen.story).replace(/\n/g, '<br>')}
+                        </div>
+                    ` : ''}
+                    
+                    ${specimen.audioNoteUrl ? `
+                        <div class="specimen-audio">
+                            <strong>Audio Note:</strong> 
+                            <audio controls preload="none">
+                                <source src="${escapeHtml(specimen.audioNoteUrl)}" type="audio/mpeg">
+                                <source src="${escapeHtml(specimen.audioNoteUrl)}" type="audio/wav">
+                                <source src="${escapeHtml(specimen.audioNoteUrl)}" type="audio/mp4">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function createBadgeCard(badge) {
+            return `
+                <div class="badge-card">
+                    <div class="badge-title">🏆 ${escapeHtml(badge.title)}</div>
+                    <div class="badge-description">${escapeHtml(badge.description)}</div>
+                </div>
+            `;
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load events when page loads
+        loadEvents();
+    </script>
+</body>
+</html>
