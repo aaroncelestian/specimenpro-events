@@ -1,8 +1,11 @@
 # SpecimenPro Event Manager Requirements
-# This application uses only Python standard library modules
+# Install with: pip install -r requirements.txt
 
-# No external dependencies required
-# The application uses tkinter which comes built-in with Python
+# QR code generation library with PIL support (for generating specimen QR codes)
+qrcode[pil]>=7.0.0
+
+# PDF generation library (for creating QR code sheets)
+reportlab>=4.0.0
 
 # For development and testing (optional):
 # pytest>=7.0.0

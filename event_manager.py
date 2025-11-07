@@ -10,6 +10,25 @@ from tkinter import ttk, messagebox, filedialog
 from datetime import datetime
 import uuid
 import os
+try:
+    import qrcode
+    from qrcode.constants import ERROR_CORRECT_H
+    QR_CODE_AVAILABLE = True
+except ImportError:
+    QR_CODE_AVAILABLE = False
+
+try:
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image as RLImage
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.lib import colors
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from io import BytesIO
+    PDF_AVAILABLE = True
+except ImportError:
+    PDF_AVAILABLE = False
 
 
 class SpecimenProEventManager:
@@ -170,6 +189,13 @@ class SpecimenProEventManager:
         
         ttk.Button(button_frame, text="Add Specimen", command=self.add_specimen).pack(side=tk.LEFT)
         ttk.Button(button_frame, text="Remove Specimen", command=self.remove_specimen).pack(side=tk.LEFT, padx=(10, 0))
+        qr_menu = tk.Menu(self.root, tearoff=0)
+        qr_menu.add_command(label="Save as PNG Files", command=self.generate_qr_codes)
+        qr_menu.add_command(label="Save as PDF Grid", command=self.generate_qr_pdf)
+        
+        qr_button = ttk.Menubutton(button_frame, text="Generate QR Codes ▼")
+        qr_button['menu'] = qr_menu
+        qr_button.pack(side=tk.LEFT, padx=(10, 0))
         
         # Specimens list
         self.specimens_tree = ttk.Treeview(specimens_frame, columns=("name", "locality", "rarity"), show="tree headings")
@@ -596,6 +622,307 @@ class SpecimenProEventManager:
             badge = next((b for b in self.current_event["badges"] if b["id"] == badge_id), None)
             if badge:
                 self.open_badge_dialog(badge)
+    
+    def generate_qr_codes(self):
+        """Generate QR codes for all specimens in the current event"""
+        if not QR_CODE_AVAILABLE:
+            messagebox.showerror("Error", "QR code generation requires the 'qrcode' library. Please install it with: pip install qrcode[pil]")
+            return
+            
+        if not self.current_event:
+            messagebox.showwarning("No Event", "Please select or create an event first")
+            return
+            
+        specimens = self.current_event.get("specimens", [])
+        if not specimens:
+            messagebox.showwarning("No Specimens", "This event has no specimens to generate QR codes for")
+            return
+        
+        # Ask user to select output directory
+        output_dir = filedialog.askdirectory(title="Select directory to save QR codes")
+        if not output_dir:
+            return
+        
+        try:
+            event_id = self.current_event["id"]
+            generated_count = 0
+            
+            for specimen in specimens:
+                specimen_id = specimen["id"]
+                specimen_name = specimen["name"]
+                
+                # Create deep link URL
+                qr_url = f"specimenpro://event/{event_id}/specimen/{specimen_id}"
+                
+                # Generate QR code with high error correction
+                qr = qrcode.QRCode(
+                    version=1,
+                    error_correction=ERROR_CORRECT_H,
+                    box_size=10,
+                    border=4,
+                )
+                qr.add_data(qr_url)
+                qr.make(fit=True)
+                
+                # Create QR code image
+                img = qr.make_image(fill_color="black", back_color="white")
+                
+                # Save with descriptive filename
+                safe_name = "".join(c for c in specimen_name if c.isalnum() or c in (' ', '-', '_')).rstrip()
+                filename = f"{safe_name}_{specimen_id}.png"
+                filepath = os.path.join(output_dir, filename)
+                
+                img.save(filepath)
+                generated_count += 1
+            
+            messagebox.showinfo("Success", f"Generated {generated_count} QR codes in:\n{output_dir}")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to generate QR codes: {str(e)}")
+    
+    def generate_qr_pdf(self):
+        """Generate QR codes in a PDF grid layout"""
+        if not QR_CODE_AVAILABLE:
+            messagebox.showerror("Error", "QR code generation requires the 'qrcode' library. Please install it with: pip install qrcode[pil]")
+            return
+            
+        if not PDF_AVAILABLE:
+            messagebox.showerror("Error", "PDF generation requires the 'reportlab' library. Please install it with: pip install reportlab")
+            return
+            
+        if not self.current_event:
+            messagebox.showwarning("No Event", "Please select or create an event first")
+            return
+            
+        specimens = self.current_event.get("specimens", [])
+        if not specimens:
+            messagebox.showwarning("No Specimens", "This event has no specimens to generate QR codes for")
+            return
+        
+        # Show configuration dialog
+        config = self.show_pdf_config_dialog()
+        if not config:
+            return
+        
+        try:
+            # Ask user to select output file
+            filename = filedialog.asksaveasfilename(
+                title="Save QR Code PDF",
+                defaultextension=".pdf",
+                filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")],
+                initialfile=f"{self.current_event['id']}_qr_codes.pdf"
+            )
+            if not filename:
+                return
+            
+            self.create_pdf_qr_grid(filename, specimens, config)
+            messagebox.showinfo("Success", f"Generated QR code PDF:\n{filename}")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to generate PDF: {str(e)}")
+    
+    def show_pdf_config_dialog(self):
+        """Show configuration dialog for PDF generation"""
+        dialog = tk.Toplevel(self.root)
+        dialog.title("PDF Configuration")
+        dialog.geometry("400x350")
+        dialog.transient(self.root)
+        dialog.grab_set()
+        
+        # Configuration variables
+        config = {}
+        
+        # Page size
+        ttk.Label(dialog, text="Page Size:").grid(row=0, column=0, sticky=tk.W, padx=10, pady=5)
+        page_size_var = tk.StringVar(value="Letter")
+        page_size_combo = ttk.Combobox(dialog, textvariable=page_size_var, values=["Letter", "A4"], state="readonly")
+        page_size_combo.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        
+        # Grid columns
+        ttk.Label(dialog, text="Columns:").grid(row=1, column=0, sticky=tk.W, padx=10, pady=5)
+        columns_var = tk.IntVar(value=3)
+        columns_spin = ttk.Spinbox(dialog, from_=1, to=10, textvariable=columns_var, width=10)
+        columns_spin.grid(row=1, column=1, sticky=tk.W, padx=10, pady=5)
+        
+        # Grid rows
+        ttk.Label(dialog, text="Rows:").grid(row=2, column=0, sticky=tk.W, padx=10, pady=5)
+        rows_var = tk.IntVar(value=4)
+        rows_spin = ttk.Spinbox(dialog, from_=1, to=10, textvariable=rows_var, width=10)
+        rows_spin.grid(row=2, column=1, sticky=tk.W, padx=10, pady=5)
+        
+        # QR code size
+        ttk.Label(dialog, text="QR Code Size:").grid(row=3, column=0, sticky=tk.W, padx=10, pady=5)
+        qr_size_var = tk.DoubleVar(value=1.0)
+        qr_size_spin = ttk.Spinbox(dialog, from_=0.5, to=3.0, increment=0.1, textvariable=qr_size_var, width=10)
+        qr_size_spin.grid(row=3, column=1, sticky=tk.W, padx=10, pady=5)
+        ttk.Label(dialog, text="(in inches)").grid(row=3, column=2, sticky=tk.W, padx=5, pady=5)
+        
+        # Include specimen names
+        include_names_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(dialog, text="Include specimen names", variable=include_names_var).grid(row=4, column=0, columnspan=2, sticky=tk.W, padx=10, pady=5)
+        
+        # Include specimen IDs
+        include_ids_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(dialog, text="Include specimen IDs", variable=include_ids_var).grid(row=5, column=0, columnspan=2, sticky=tk.W, padx=10, pady=5)
+        
+        # Include event title
+        include_title_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(dialog, text="Include event title on first page", variable=include_title_var).grid(row=6, column=0, columnspan=2, sticky=tk.W, padx=10, pady=5)
+        
+        dialog.columnconfigure(1, weight=1)
+        
+        def on_ok():
+            config['page_size'] = page_size_var.get()
+            config['columns'] = columns_var.get()
+            config['rows'] = rows_var.get()
+            config['qr_size'] = qr_size_var.get()
+            config['include_names'] = include_names_var.get()
+            config['include_ids'] = include_ids_var.get()
+            config['include_title'] = include_title_var.get()
+            dialog.destroy()
+        
+        def on_cancel():
+            dialog.destroy()
+        
+        # Buttons
+        button_frame = ttk.Frame(dialog)
+        button_frame.grid(row=7, column=0, columnspan=3, pady=20)
+        ttk.Button(button_frame, text="Generate", command=on_ok).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Cancel", command=on_cancel).pack(side=tk.LEFT, padx=5)
+        
+        # Wait for dialog to close
+        self.root.wait_window(dialog)
+        
+        return config if config else None
+    
+    def create_pdf_qr_grid(self, filename, specimens, config):
+        """Create PDF with QR codes in a grid layout"""
+        # Page setup
+        page_size = letter if config['page_size'] == 'Letter' else A4
+        doc = SimpleDocTemplate(filename, pagesize=page_size)
+        story = []
+        styles = getSampleStyleSheet()
+        
+        # Add title if requested
+        if config['include_title']:
+            title_style = ParagraphStyle(
+                'CustomTitle',
+                parent=styles['Heading1'],
+                fontSize=18,
+                spaceAfter=30,
+                alignment=1  # Center
+            )
+            title = Paragraph(f"SpecimenPro Event: {self.current_event['title']}", title_style)
+            story.append(title)
+            story.append(Spacer(1, 20))
+        
+        # Calculate grid dimensions
+        qr_size_inches = config['qr_size']
+        qr_size_points = qr_size_inches * inch
+        
+        # Generate QR codes
+        qr_data = []
+        event_id = self.current_event["id"]
+        
+        for specimen in specimens:
+            specimen_id = specimen["id"]
+            specimen_name = specimen["name"]
+            
+            # Create QR code
+            qr_url = f"specimenpro://event/{event_id}/specimen/{specimen_id}"
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=ERROR_CORRECT_H,
+                box_size=10,
+                border=2,
+            )
+            qr.add_data(qr_url)
+            qr.make(fit=True)
+            
+            # Create QR code image and convert to bytes
+            pil_img = qr.make_image(fill_color="black", back_color="white")
+            img_buffer = BytesIO()
+            pil_img.save(img_buffer, format='PNG')
+            img_buffer.seek(0)
+            
+            # Create ReportLab Image
+            rl_img = RLImage(img_buffer, width=qr_size_points, height=qr_size_points)
+            
+            # Create cell data
+            cell_text = []
+            if config['include_names']:
+                cell_text.append(f"<b>{specimen_name}</b>")
+            if config['include_ids']:
+                cell_text.append(f"ID: {specimen_id}")
+            
+            qr_data.append((rl_img, "<br/>".join(cell_text)))
+        
+        # Create table data
+        cols = config['columns']
+        rows = config['rows']
+        cells_per_page = cols * rows
+        
+        # Text style for labels
+        label_style = ParagraphStyle(
+            'QRLabel',
+            parent=styles['Normal'],
+            fontSize=8,
+            alignment=1,  # Center
+            spaceAfter=2
+        )
+        
+        for page_start in range(0, len(qr_data), cells_per_page):
+            page_data = qr_data[page_start:page_start + cells_per_page]
+            
+            # Create table grid
+            table_data = []
+            for i in range(rows):
+                row = []
+                for j in range(cols):
+                    idx = i * cols + j
+                    if idx < len(page_data):
+                        rl_img, text = page_data[idx]
+                        
+                        # Create cell content as a list
+                        cell_content = []
+                        
+                        # Add QR code image
+                        cell_content.append(rl_img)
+                        
+                        # Add text label if present
+                        if text:
+                            cell_content.append(Spacer(1, 5))
+                            cell_content.append(Paragraph(text, label_style))
+                        
+                        row.append(cell_content)
+                    else:
+                        row.append("")
+                table_data.append(row)
+            
+            # Calculate row heights based on content
+            row_height = qr_size_points + (30 if config['include_names'] or config['include_ids'] else 10)
+            
+            # Create table
+            table = Table(table_data, colWidths=[qr_size_points + 20] * cols, rowHeights=[row_height] * rows)
+            table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            
+            story.append(table)
+            
+            # Add page break except for last page
+            if page_start + cells_per_page < len(qr_data):
+                from reportlab.platypus import PageBreak
+                story.append(PageBreak())
+        
+        # Build PDF
+        doc.build(story)
     
     def clear_form(self):
         """Clear all form fields"""

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About SpecimenPro Events</title>
+    <link rel="stylesheet" href="specimenpro-style.css">
+    <style>
+        /* About Events specific styles */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            color: var(--white);
+        }
+
+        .about-content {
+            padding: 60px 0;
+        }
+
+        .about-section {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .about-section h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-section h3 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            font-size: 1.1rem;
+        }
+
+        .feature-list li:before {
+            content: "🔬";
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .event-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .event-type-card {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .event-type-card h4 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-type-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: var(--white);
+            padding: 4rem 0;
+            text-align: center;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+
+        .cta-section h2 {
+            color: var(--white);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .steps-list {
+            counter-reset: step-counter;
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .steps-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding: 1.5rem 0 1.5rem 4rem;
+            margin-bottom: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .steps-list li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: var(--white);
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .about-section {
+                padding: 2rem;
+            }
+
+            .event-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-placeholder">SP</div>
+                <span>SpecimenPro</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Events</a></li>
+                <li><a href="about-events.html" class="active">About Events</a></li>
+                <li><a href="https://aaroncelestian.github.io/SpecimenPro-Webpage/">Main Site</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>About SpecimenPro Events</h1>
+                <p class="subtitle">Discover the exciting world of virtual mineral specimen collection</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="about-content">
+                <div class="about-section">
+                    <h2>What Are SpecimenPro Events?</h2>
+                    <p>SpecimenPro Events are interactive, location-based experiences where participants can discover and collect virtual mineral specimens using our mobile app. These events combine education, exploration, and gamification to create an engaging learning experience about geology and mineralogy.</p>
+                    
+                    <p>Whether you're at a museum, science center, geological site, or educational institution, SpecimenPro Events bring the fascinating world of minerals to life through cutting-edge augmented reality and QR code technology.</p>
+
+                    <ul class="feature-list">
+                        <li>Educational and entertaining for all ages</li>
+                        <li>Hands-on learning about geology and mineralogy</li>
+                        <li>Interactive specimen collection and identification</li>
+                        <li>Badge system for achievements and progression</li>
+                        <li>Perfect for schools, museums, and educational institutions</li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h2>How It Works</h2>
+                    <p>Getting started with SpecimenPro Events is simple and intuitive. Our system is designed to be accessible while providing a rich, educational experience.</p>
+                    
+                    <ol class="steps-list">
+                        <li><strong>Download the SpecimenPro App</strong> - Available on iOS, our app provides the tools you need to scan QR codes and manage your specimen collection.</li>
+                        <li><strong>Find an Event</strong> - Look for SpecimenPro events at participating museums, schools, or educational venues near you.</li>
+                        <li><strong>Scan QR Codes</strong> - Throughout the event venue, you'll find QR codes placed near exhibits, displays, or marked geological features.</li>
+                        <li><strong>Collect Specimens</strong> - Each QR code reveals a virtual mineral specimen with detailed information about its properties, formation, and significance.</li>
+                        <li><strong>Learn and Explore</strong> - Read fascinating facts, listen to audio notes, view high-quality photos, and discover the stories behind each specimen.</li>
+                        <li><strong>Earn Badges</strong> - Complete collection challenges and earn achievement badges as you expand your virtual mineral collection.</li>
+                    </ol>
+                </div>
+
+                <div class="about-section">
+                    <h2>Types of Events</h2>
+                    <p>SpecimenPro Events come in various formats, each designed to provide unique learning experiences and engagement opportunities.</p>
+                    
+                    <div class="event-types">
+                        <div class="event-type-card">
+                            <div class="icon">🏛️</div>
+                            <h4>Museum Exhibits</h4>
+                            <p>Explore mineral collections in museums with enhanced digital content and interactive learning experiences.</p>
+                        </div>
+                        <div class="event-type-card">
+                            <div class="icon">🎓</div>
+                            <h4>Educational Programs</h4>
+                            <p>Structured learning experiences for schools and educational groups focused on earth sciences and geology.</p>
+                        </div>
+                        <div class="event-type-card">
+                            <div class="icon">🔍</div>
+                            <h4>Scavenger Hunts</h4>
+                            <p>Engaging treasure hunt-style events where participants search for hidden specimens and solve geological puzzles.</p>
+                        </div>
+                        <div class="event-type-card">
+                            <div class="icon">🏆</div>
+                            <h4>Competitions</h4>
+                            <p>Timed challenges and competitions to collect specific specimens or complete geological tasks.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-section">
+                    <h2>Educational Benefits</h2>
+                    <p>SpecimenPro Events are designed with education at their core, providing numerous learning opportunities for participants of all ages.</p>
+                    
+                    <h3>Science Education</h3>
+                    <p>Learn about mineral classification, crystal structures, chemical compositions, and geological processes through interactive content designed by educators and geologists.</p>
+                    
+                    <h3>Critical Thinking</h3>
+                    <p>Develop observational skills and scientific thinking as you identify specimens, understand their properties, and make connections between different geological concepts.</p>
+                    
+                    <h3>Digital Literacy</h3>
+                    <p>Enhance technology skills while using mobile apps, QR codes, and digital resources in a real-world context.</p>
+                    
+                    <h3>Environmental Awareness</h3>
+                    <p>Gain appreciation for Earth's natural resources and the importance of geological conservation and responsible specimen collection.</p>
+                </div>
+
+                <div class="cta-section">
+                    <h2>Ready to Start Your Collection?</h2>
+                    <p>Join thousands of participants who have already discovered the fascinating world of virtual mineral specimen collection.</p>
+                    <a href="index.html" class="cta-button">View Current Events</a>
+                    <a href="https://aaroncelestian.github.io/SpecimenPro-Webpage/" class="cta-button" style="margin-left: 1rem;">Download SpecimenPro</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SpecimenPro Events</h3>
+                    <p>Discover and collect virtual mineral specimens at events near you</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Events</a></li>
+                        <li><a href="about-events.html">About Events</a></li>
+                        <li><a href="https://aaroncelestian.github.io/SpecimenPro-Webpage/">SpecimenPro Website</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Get Started</h3>
+                    <p>Scan QR codes at participating events to collect specimens in the SpecimenPro iOS app</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SpecimenPro. Part of the SpecimenPro ecosystem.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
