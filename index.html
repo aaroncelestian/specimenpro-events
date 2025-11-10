@@ -376,7 +376,8 @@
             const container = document.getElementById('events-container');
             
             try {
-                const response = await fetch('events.json');
+                // Add cache-busting parameter to ensure fresh data
+                const response = await fetch(`events.json?t=${Date.now()}`);
                 if (!response.ok) {
                     throw new Error('Failed to load events');
                 }
