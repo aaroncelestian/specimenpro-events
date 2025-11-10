@@ -1,57 +1,19 @@
 {
   "version": 1,
-  "lastUpdated": "2025-11-03T19:00:00Z",
+  "lastUpdated": "2025-11-10T10:46:47.458615Z",
   "events": [
     {
-      "id": "celestian-test-2025",
-      "title": "Celestian Collection Test Event",
-      "description": "Test event to verify the system works. Scan QR codes to collect virtual specimens!",
-      "startDate": "2025-11-03T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "status": "active",
-      "type": "exhibit",
-      "location": "Celestian Collection, Los Angeles",
+      "id": "event-7e97ba0b",
+      "title": "UnEarthed",
+      "description": "Enhance your musuem experience at the Natural History Museum of Los Angeles County's newest exhbit -- Unearthed: Raw Beauty\n\nFeaturing virtual collecting, guided tours in voice notes, spectacular photographs, and behind-the-scenes details about the specimens.",
+      "startDate": "2025-12-14T00:00:00Z",
+      "endDate": "2026-6-10T23:59:59Z",
+      "status": "upcoming",
+      "type": "scavenger_hunt",
+      "location": "Natural History Museum of Los Angeles County, Los Angeles, CA",
       "imageUrl": null,
-      "specimens": [
-        {
-          "id": "001",
-          "name": "Azurite",
-          "locality": "Morenci Mine, Arizona, USA",
-          "description": "Beautiful blue copper carbonate crystals",
-          "imageUrl": null,
-          "rarity": "common",
-          "funFact": "Azurite was ground into pigment for Renaissance paintings!"
-        },
-        {
-          "id": "002",
-          "name": "Quartz",
-          "locality": "Arkansas, USA",
-          "description": "Clear quartz crystal cluster",
-          "imageUrl": null,
-          "rarity": "common",
-          "funFact": "Quartz is the second most abundant mineral on Earth!"
-        }
-      ],
-      "badges": [
-        {
-          "id": "first-scan",
-          "title": "First Scan",
-          "description": "Scanned your first specimen",
-          "icon": "star.fill",
-          "color": "blue",
-          "requirement": 1,
-          "requirementType": "collect_count"
-        },
-        {
-          "id": "collection-complete",
-          "title": "Collection Complete",
-          "description": "Collected all specimens",
-          "icon": "trophy.fill",
-          "color": "gold",
-          "requirement": 2,
-          "requirementType": "collect_all"
-        }
-      ]
+      "specimens": [],
+      "badges": []
     }
   ]
 }
