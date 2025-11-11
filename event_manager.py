@@ -651,8 +651,8 @@ class SpecimenProEventManager:
                 specimen_id = specimen["id"]
                 specimen_name = specimen["name"]
                 
-                # Create deep link URL
-                qr_url = f"specimenpro://event/{event_id}/specimen/{specimen_id}"
+                # Create HTML URL with deep link fallback
+                qr_url = f"https://aaroncelestian.github.io/specimenpro-events/event/{event_id}/{specimen_id}"
                 
                 # Generate QR code with high error correction
                 qr = qrcode.QRCode(
@@ -828,8 +828,8 @@ class SpecimenProEventManager:
             specimen_id = specimen["id"]
             specimen_name = specimen["name"]
             
-            # Create QR code
-            qr_url = f"specimenpro://event/{event_id}/specimen/{specimen_id}"
+            # Create HTML URL with deep link fallback
+            qr_url = f"https://aaroncelestian.github.io/specimenpro-events/event/{event_id}/{specimen_id}"
             qr = qrcode.QRCode(
                 version=1,
                 error_correction=ERROR_CORRECT_H,

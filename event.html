@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Event - SpecimenPro</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .info-box {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .info-box p {
+            color: #555;
+            margin: 8px 0;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        
+        .info-box strong {
+            color: #333;
+        }
+        
+        .button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .app-store-btn {
+            background: #000;
+        }
+        
+        .status {
+            color: #667eea;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        
+        .note {
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">🎯</div>
+        <h1>SpecimenPro</h1>
+        <p class="subtitle">Join Event</p>
+        
+        <div class="info-box">
+            <p><strong>Event ID:</strong><br><span id="eventId">Loading...</span></p>
+            <p><strong>Specimen ID:</strong><br><span id="specimenId">Loading...</span></p>
+        </div>
+        
+        <a href="#" id="openAppBtn" class="button">📱 Open in SpecimenPro</a>
+        
+        <br>
+        
+        <a href="https://apps.apple.com/app/YOUR_APP_ID" class="button app-store-btn" id="appStoreBtn" style="display:none;">
+            📲 Download SpecimenPro
+        </a>
+        
+        <p class="status" id="status">Checking if app is installed...</p>
+        
+        <p class="note">
+            SpecimenPro helps you collect virtual specimens at events and museums.
+        </p>
+    </div>
+
+    <script>
+        // Extract IDs from URL path: /event/{eventId}/{specimenId}
+        const path = window.location.pathname.split('/').filter(p => p);
+        const eventId = path[path.indexOf('event') + 1] || 'Unknown';
+        const specimenId = path[path.indexOf('event') + 2] || 'Unknown';
+        
+        // Display IDs
+        document.getElementById('eventId').textContent = eventId;
+        document.getElementById('specimenId').textContent = specimenId;
+        
+        // Create deep link
+        const deepLink = `specimenpro://event/${eventId}/specimen/${specimenId}`;
+        document.getElementById('openAppBtn').href = deepLink;
+        
+        // Try to open app automatically on iOS
+        let appOpened = false;
+        
+        function tryOpenApp() {
+            const timeout = setTimeout(() => {
+                if (!appOpened) {
+                    // App not installed - show download button
+                    document.getElementById('status').textContent = 'App not installed';
+                    document.getElementById('appStoreBtn').style.display = 'inline-block';
+                }
+            }, 2000);
+            
+            // Attempt to open app
+            window.location.href = deepLink;
+            
+            // If page loses focus, app opened successfully
+            window.addEventListener('blur', () => {
+                appOpened = true;
+                clearTimeout(timeout);
+                document.getElementById('status').textContent = 'Opening in SpecimenPro...';
+            });
+        }
+        
+        // Auto-try on iOS devices
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            window.addEventListener('load', tryOpenApp);
+        } else {
+            document.getElementById('status').textContent = 'SpecimenPro is available on iOS';
+            document.getElementById('appStoreBtn').style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>
