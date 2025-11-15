@@ -460,28 +460,39 @@ class SpecimenProEventManager:
         comp_container = ttk.Frame(scrollable_frame)
         comp_container.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         
-        # Unicode buttons for composition - stacked in two rows
+        # Unicode buttons for composition - stacked in three rows
+        composition_text = tk.Text(scrollable_frame, height=4, width=50, wrap=tk.WORD)
+        
         # Row 1: Subscripts
         sub_frame = ttk.Frame(comp_container)
         sub_frame.pack(fill=tk.X, pady=(0, 2))
         ttk.Label(sub_frame, text="Sub:").pack(side=tk.LEFT, padx=(0, 5))
         
-        composition_text = tk.Text(scrollable_frame, height=4, width=50, wrap=tk.WORD)
-        
-        subscripts = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
-        for num, sub in subscripts.items():
+        subscripts = [('0', '₀'), ('1', '₁'), ('2', '₂'), ('3', '₃'), ('4', '₄'), ('5', '₅'), ('6', '₆'), ('7', '₇'), ('8', '₈'), ('9', '₉')]
+        for label, sub in subscripts:
             ttk.Button(sub_frame, text=sub, width=2, 
                       command=lambda s=sub: composition_text.insert(tk.INSERT, s)).pack(side=tk.LEFT, padx=1)
         
         # Row 2: Superscripts
         sup_frame = ttk.Frame(comp_container)
-        sup_frame.pack(fill=tk.X, pady=(0, 5))
+        sup_frame.pack(fill=tk.X, pady=(0, 2))
         ttk.Label(sup_frame, text="Sup:").pack(side=tk.LEFT, padx=(0, 5))
         
-        superscripts = {'0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '+': '⁺', '-': '⁻'}
-        for char, sup in superscripts.items():
+        superscripts = [('0', '⁰'), ('1', '¹'), ('2', '²'), ('3', '³'), ('4', '⁴'), ('5', '⁵'), ('6', '⁶'), ('7', '⁷'), ('8', '⁸'), ('9', '⁹')]
+        for label, sup in superscripts:
             ttk.Button(sup_frame, text=sup, width=2,
                       command=lambda s=sup: composition_text.insert(tk.INSERT, s)).pack(side=tk.LEFT, padx=1)
+        
+        # Row 3: Special characters
+        special_frame = ttk.Frame(comp_container)
+        special_frame.pack(fill=tk.X, pady=(0, 5))
+        ttk.Label(special_frame, text="Special:").pack(side=tk.LEFT, padx=(0, 5))
+        
+        # Superscript plus/minus, subscript minus, superscript slash, center dot (hydration), empty box (vacancy)
+        special_chars = [('⁺', '⁺'), ('⁻', '⁻'), ('₋', '₋'), ('ᐟ', 'ᐟ'), ('·', '·'), ('□', '□')]
+        for label, char in special_chars:
+            ttk.Button(special_frame, text=char, width=2,
+                      command=lambda s=char: composition_text.insert(tk.INSERT, s)).pack(side=tk.LEFT, padx=1)
         
         composition_text.grid(row=row+1, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         if specimen:
@@ -595,7 +606,51 @@ class SpecimenProEventManager:
         
         ttk.Label(dialog, text="Icon:").grid(row=3, column=0, sticky=tk.W, padx=10, pady=5)
         icon_var = tk.StringVar(value=badge.get("icon", "star.fill") if badge else "star.fill")
-        ttk.Entry(dialog, textvariable=icon_var).grid(row=3, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        # Common SF Symbols for badges
+        icon_options = [
+            "star.fill",
+            "star",
+            "trophy.fill",
+            "trophy",
+            "medal.fill",
+            "medal",
+            "crown.fill",
+            "crown",
+            "rosette",
+            "flag.fill",
+            "flag",
+            "checkmark.seal.fill",
+            "checkmark.seal",
+            "checkmark.circle.fill",
+            "checkmark.circle",
+            "bolt.fill",
+            "bolt",
+            "flame.fill",
+            "flame",
+            "sparkles",
+            "heart.fill",
+            "heart",
+            "diamond.fill",
+            "diamond",
+            "gem.fill",
+            "gem",
+            "target",
+            "scope",
+            "eye.fill",
+            "eye",
+            "binoculars.fill",
+            "binoculars",
+            "magnifyingglass",
+            "location.fill",
+            "location",
+            "map.fill",
+            "map",
+            "compass.drawing",
+            "figure.walk",
+            "figure.hiking"
+        ]
+        icon_combo = ttk.Combobox(dialog, textvariable=icon_var, values=icon_options, state="normal")
+        icon_combo.grid(row=3, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
         
         ttk.Label(dialog, text="Color:").grid(row=4, column=0, sticky=tk.W, padx=10, pady=5)
         color_var = tk.StringVar(value=badge.get("color", "blue") if badge else "blue")
