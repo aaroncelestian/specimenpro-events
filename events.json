@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2025-11-14T20:08:20.602916Z",
+  "lastUpdated": "2025-11-14T20:09:23.444234Z",
   "events": [
     {
       "id": "event-7e97ba0b",
@@ -8,7 +8,7 @@
       "description": "Enhance your musuem experience at the Natural History Museum of Los Angeles County's newest exhbit -- Unearthed: Raw Beauty\n\nFeaturing virtual collecting, guided tours in voice notes, spectacular photographs, and behind-the-scenes details about the specimens.",
       "startDate": "Sun, 14 Dec 2025 00:00:00 GMT",
       "endDate": "Wed, 10 Jun 2026 23:59:59 GMT",
-      "status": "upcoming",
+      "status": "active",
       "type": "exhibit",
       "location": "Natural History Museum of Los Angeles County, Los Angeles, CA",
       "imageUrl": null,
