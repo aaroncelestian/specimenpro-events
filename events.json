@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "Sun, 10 Nov 2025 11:05:18 GMT",
+  "lastUpdated": "2025-11-14T19:57:22.755940Z",
   "events": [
     {
       "id": "event-7e97ba0b",
@@ -14,6 +14,43 @@
       "imageUrl": null,
       "specimens": [],
       "badges": []
+    },
+    {
+      "id": "event-d8f97a5a",
+      "title": "Minerals of India",
+      "description": "At the back of the Gem & Mineral Hall at the Natural History Museum of Los Angeles County, you will find a modern mineralogy lab.  At the window looking into the lab, there will be a several important acquisition of a group of minerals called zeolites.  Scan as many as you can to find out more about their super powers!",
+      "startDate": "2025-11-14",
+      "endDate": "2025-5-14",
+      "status": "active",
+      "type": "scavenger_hunt",
+      "location": "Natural History Museum of Los Angeles County, Gem Hall",
+      "imageUrl": null,
+      "specimens": [
+        {
+          "id": "spec-78222311",
+          "name": "Heulandite",
+          "locality": "Poona, India",
+          "description": "Heulandite is a type of zeolite.",
+          "rarity": "common",
+          "photoUrl": "",
+          "audioNoteUrl": "",
+          "composition": "(Ca,Na)\u2082\u208b\u2083Al\u2083(Al,Si)\u2082Si\u2081\u2083O\u2083\u2086\u00b712H\u2082O",
+          "funFacts": "It wets itself when it is heated!",
+          "story": "It's a \"zeolite\" - a mineral with secret tunnels! Heulandite has tiny channels and chambers running through its crystal structure, almost like a microscopic maze. These spaces can trap water molecules inside, which is pretty cool - it's like the mineral has its own built-in storage system.\n\nIt changes when you heat it up. If you gently warm heulandite, the water trapped inside starts to escape, and the mineral can actually change its properties. Even cooler - if you let it cool down in humid air, it can soak the water back up like a sponge! This reversible behavior is unusual for minerals.\n\nIt comes in beautiful colors and forms. Heulandite often grows in pearly, blade-like or coffin-shaped crystals that can be white, pink, red, yellow, or even colorless. The crystals have a glassy or pearly shine that catches the light beautifully.\n\nIt's found in volcanic rocks. Heulandite typically forms in gas bubbles (vesicles) within ancient lava flows, so finding it is like discovering what happened inside a volcano millions of years ago.\n\nIt has practical uses today. Because of those tunnel-like channels, scientists use zeolites like heulandite in water filters, as molecular \"sorters\" in chemistry, and even in some kitty litters to absorb odors!\nThe combination of its beautiful appearance and its \"active\" properties (absorbing and releasing water) makes it much more interesting than just a pretty rock!",
+          "imageUrl": null
+        }
+      ],
+      "badges": [
+        {
+          "id": "badge-49778ffe",
+          "title": "First Scan!",
+          "description": "Good work! Now let's find the res!",
+          "icon": "star.fill",
+          "color": "blue",
+          "requirement": 1,
+          "requirementType": "collect_count"
+        }
+      ]
     }
   ]
 }
