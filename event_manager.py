@@ -10,6 +10,7 @@ from tkinter import ttk, messagebox, filedialog
 from datetime import datetime
 import uuid
 import os
+import shutil
 try:
     import qrcode
     from qrcode.constants import ERROR_CORRECT_H
@@ -132,46 +133,66 @@ class SpecimenProEventManager:
         
         # Event fields
         row = 0
-        fields = [
-            ("Event ID:", "id"),
-            ("Title:", "title"),
-            ("Description:", "description"),
-            ("Type:", "type"),
-            ("Location:", "location"),
-            ("Status:", "status"),
-            ("Start Date (YYYY-MM-DD):", "startDate"),
-            ("End Date (YYYY-MM-DD):", "endDate")
-        ]
-        
         self.event_vars = {}
         
-        for label, field in fields:
-            ttk.Label(event_frame, text=label).grid(row=row, column=0, sticky=tk.W, pady=5)
-            
-            if field == "description":
-                var = tk.StringVar()
-                entry = tk.Text(event_frame, height=4, width=50)
-                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
-                self.event_vars[field] = (var, entry)
-            elif field == "type":
-                var = tk.StringVar()
-                values = ["exhibit", "scavenger_hunt", "competition", "workshop"]
-                combo = ttk.Combobox(event_frame, textvariable=var, values=values)
-                combo.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
-                self.event_vars[field] = var
-            elif field == "status":
-                var = tk.StringVar()
-                values = ["active", "upcoming", "ended", "draft"]
-                combo = ttk.Combobox(event_frame, textvariable=var, values=values)
-                combo.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
-                self.event_vars[field] = var
-            else:
-                var = tk.StringVar()
-                entry = ttk.Entry(event_frame, textvariable=var)
-                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
-                self.event_vars[field] = var
-            
-            row += 1
+        # Event ID
+        ttk.Label(event_frame, text="Event ID:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        id_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=id_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["id"] = id_var
+        row += 1
+        
+        # Title
+        ttk.Label(event_frame, text="Title:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        title_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=title_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["title"] = title_var
+        row += 1
+        
+        # Description
+        ttk.Label(event_frame, text="Description:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        desc_var = tk.StringVar()
+        desc_entry = tk.Text(event_frame, height=4, width=50)
+        desc_entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["description"] = (desc_var, desc_entry)
+        row += 1
+        
+        # Type
+        ttk.Label(event_frame, text="Type:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        type_var = tk.StringVar()
+        type_combo = ttk.Combobox(event_frame, textvariable=type_var, values=["exhibit", "scavenger_hunt", "competition", "workshop"])
+        type_combo.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["type"] = type_var
+        row += 1
+        
+        # Location
+        ttk.Label(event_frame, text="Location:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        location_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=location_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["location"] = location_var
+        row += 1
+        
+        # Status
+        ttk.Label(event_frame, text="Status:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        status_var = tk.StringVar()
+        status_combo = ttk.Combobox(event_frame, textvariable=status_var, values=["active", "upcoming", "ended", "draft"])
+        status_combo.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["status"] = status_var
+        row += 1
+        
+        # Start Date
+        ttk.Label(event_frame, text="Start Date:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        start_date_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=start_date_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["startDate"] = start_date_var
+        row += 1
+        
+        # End Date
+        ttk.Label(event_frame, text="End Date:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        end_date_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=end_date_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["endDate"] = end_date_var
+        row += 1
         
         # Save button for current event
         ttk.Button(event_frame, text="Update Event", command=self.update_current_event).grid(row=row, column=1, pady=20, sticky=tk.E)
@@ -362,9 +383,13 @@ class SpecimenProEventManager:
         """Open dialog for adding/editing a specimen"""
         dialog = tk.Toplevel(self.root)
         dialog.title("Specimen Details")
-        dialog.geometry("500x700")
+        dialog.geometry("700x900")
         dialog.transient(self.root)
         dialog.grab_set()
+        
+        # Configure dialog to be resizable
+        dialog.columnconfigure(0, weight=1)
+        dialog.rowconfigure(0, weight=1)
         
         # Create scrollable frame
         canvas = tk.Canvas(dialog)
@@ -376,77 +401,109 @@ class SpecimenProEventManager:
             lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
         
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Make canvas window resize with canvas
+        def on_canvas_configure(event):
+            canvas.itemconfig(canvas_window, width=event.width)
+        canvas.bind('<Configure>', on_canvas_configure)
         
         # Form fields
         row = 0
         
         ttk.Label(scrollable_frame, text="ID:").grid(row=row, column=0, sticky=tk.W, padx=10, pady=5)
         id_var = tk.StringVar(value=specimen["id"] if specimen else f"spec-{uuid.uuid4().hex[:8]}")
-        ttk.Entry(scrollable_frame, textvariable=id_var, width=40).grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        ttk.Entry(scrollable_frame, textvariable=id_var, width=50).grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         
         row += 1
         ttk.Label(scrollable_frame, text="Name:").grid(row=row, column=0, sticky=tk.W, padx=10, pady=5)
         name_var = tk.StringVar(value=specimen["name"] if specimen else "")
-        ttk.Entry(scrollable_frame, textvariable=name_var, width=40).grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        ttk.Entry(scrollable_frame, textvariable=name_var, width=50).grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         
         row += 1
         ttk.Label(scrollable_frame, text="Locality:").grid(row=row, column=0, sticky=tk.W, padx=10, pady=5)
         locality_var = tk.StringVar(value=specimen["locality"] if specimen else "")
-        ttk.Entry(scrollable_frame, textvariable=locality_var, width=40).grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        ttk.Entry(scrollable_frame, textvariable=locality_var, width=50).grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         
         row += 1
         ttk.Label(scrollable_frame, text="Description:").grid(row=row, column=0, sticky=tk.NW, padx=10, pady=5)
-        desc_text = tk.Text(scrollable_frame, height=3, width=40)
-        desc_text.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        desc_text = tk.Text(scrollable_frame, height=5, width=50, wrap=tk.WORD)
+        desc_text.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         if specimen:
             desc_text.insert(1.0, specimen.get("description", ""))
         
         row += 1
         ttk.Label(scrollable_frame, text="Rarity:").grid(row=row, column=0, sticky=tk.W, padx=10, pady=5)
         rarity_var = tk.StringVar(value=specimen.get("rarity", "common") if specimen else "common")
-        rarity_combo = ttk.Combobox(scrollable_frame, textvariable=rarity_var, values=["common", "uncommon", "rare", "legendary"], width=37)
-        rarity_combo.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        rarity_combo = ttk.Combobox(scrollable_frame, textvariable=rarity_var, values=["common", "uncommon", "rare", "legendary"], width=47)
+        rarity_combo.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         
         row += 1
         ttk.Label(scrollable_frame, text="Photo URL:").grid(row=row, column=0, sticky=tk.W, padx=10, pady=5)
         photo_var = tk.StringVar(value=specimen.get("photoUrl", "") if specimen else "")
         photo_frame = ttk.Frame(scrollable_frame)
-        photo_frame.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
-        ttk.Entry(photo_frame, textvariable=photo_var, width=30).pack(side=tk.LEFT)
-        ttk.Button(photo_frame, text="Browse", command=lambda: self.browse_file(photo_var)).pack(side=tk.LEFT, padx=(5, 0))
+        photo_frame.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
+        ttk.Entry(photo_frame, textvariable=photo_var, width=35).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        ttk.Button(photo_frame, text="Browse", command=lambda: self.browse_and_copy_file(photo_var, "images")).pack(side=tk.LEFT, padx=(5, 0))
         
         row += 1
         ttk.Label(scrollable_frame, text="Audio Note URL:").grid(row=row, column=0, sticky=tk.W, padx=10, pady=5)
         audio_var = tk.StringVar(value=specimen.get("audioNoteUrl", "") if specimen else "")
         audio_frame = ttk.Frame(scrollable_frame)
-        audio_frame.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
-        ttk.Entry(audio_frame, textvariable=audio_var, width=30).pack(side=tk.LEFT)
-        ttk.Button(audio_frame, text="Browse", command=lambda: self.browse_file(audio_var)).pack(side=tk.LEFT, padx=(5, 0))
+        audio_frame.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
+        ttk.Entry(audio_frame, textvariable=audio_var, width=35).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        ttk.Button(audio_frame, text="Browse", command=lambda: self.browse_and_copy_file(audio_var, "audio")).pack(side=tk.LEFT, padx=(5, 0))
         
         row += 1
         ttk.Label(scrollable_frame, text="Composition:").grid(row=row, column=0, sticky=tk.NW, padx=10, pady=5)
-        composition_text = tk.Text(scrollable_frame, height=3, width=40)
-        composition_text.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        comp_container = ttk.Frame(scrollable_frame)
+        comp_container.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
+        
+        # Unicode buttons for composition - stacked in two rows
+        # Row 1: Subscripts
+        sub_frame = ttk.Frame(comp_container)
+        sub_frame.pack(fill=tk.X, pady=(0, 2))
+        ttk.Label(sub_frame, text="Sub:").pack(side=tk.LEFT, padx=(0, 5))
+        
+        composition_text = tk.Text(scrollable_frame, height=4, width=50, wrap=tk.WORD)
+        
+        subscripts = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
+        for num, sub in subscripts.items():
+            ttk.Button(sub_frame, text=sub, width=2, 
+                      command=lambda s=sub: composition_text.insert(tk.INSERT, s)).pack(side=tk.LEFT, padx=1)
+        
+        # Row 2: Superscripts
+        sup_frame = ttk.Frame(comp_container)
+        sup_frame.pack(fill=tk.X, pady=(0, 5))
+        ttk.Label(sup_frame, text="Sup:").pack(side=tk.LEFT, padx=(0, 5))
+        
+        superscripts = {'0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '+': '⁺', '-': '⁻'}
+        for char, sup in superscripts.items():
+            ttk.Button(sup_frame, text=sup, width=2,
+                      command=lambda s=sup: composition_text.insert(tk.INSERT, s)).pack(side=tk.LEFT, padx=1)
+        
+        composition_text.grid(row=row+1, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         if specimen:
             composition_text.insert(1.0, specimen.get("composition", ""))
+        row += 2
         
-        row += 1
         ttk.Label(scrollable_frame, text="Fun Facts:").grid(row=row, column=0, sticky=tk.NW, padx=10, pady=5)
-        fun_facts_text = tk.Text(scrollable_frame, height=4, width=40)
-        fun_facts_text.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        fun_facts_text = tk.Text(scrollable_frame, height=6, width=50, wrap=tk.WORD)
+        fun_facts_text.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         if specimen:
             fun_facts_text.insert(1.0, specimen.get("funFacts", ""))
         
         row += 1
         ttk.Label(scrollable_frame, text="Story:").grid(row=row, column=0, sticky=tk.NW, padx=10, pady=5)
-        story_text = tk.Text(scrollable_frame, height=6, width=40)
-        story_text.grid(row=row, column=1, sticky=(tk.W, tk.E), padx=10, pady=5)
+        story_text = tk.Text(scrollable_frame, height=10, width=50, wrap=tk.WORD)
+        story_text.grid(row=row, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=10, pady=5)
         if specimen:
             story_text.insert(1.0, specimen.get("story", ""))
         
+        # Configure columns to expand with window
         scrollable_frame.columnconfigure(1, weight=1)
+        scrollable_frame.columnconfigure(2, weight=1)
         
         def save_specimen():
             specimen_data = {
@@ -480,9 +537,9 @@ class SpecimenProEventManager:
         ttk.Button(button_frame, text="Save", command=save_specimen).pack(side=tk.LEFT, padx=5)
         ttk.Button(button_frame, text="Cancel", command=dialog.destroy).pack(side=tk.LEFT, padx=5)
         
-        # Pack canvas and scrollbar
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        # Grid canvas and scrollbar for proper resizing
+        canvas.grid(row=0, column=0, sticky=(tk.N, tk.S, tk.E, tk.W))
+        scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
     
     def remove_specimen(self):
         """Remove selected specimen"""
@@ -584,8 +641,57 @@ class SpecimenProEventManager:
         ttk.Button(button_frame, text="Save", command=save_badge).pack(side=tk.LEFT, padx=5)
         ttk.Button(button_frame, text="Cancel", command=dialog.destroy).pack(side=tk.LEFT, padx=5)
     
+    def browse_and_copy_file(self, target_var, asset_type):
+        """Browse for a file, copy it to assets folder, and set the GitHub Pages URL"""
+        # Determine file types based on asset type
+        if asset_type == "images":
+            filetypes = [
+                ("Image files", "*.jpg *.jpeg *.png *.gif *.bmp *.webp *.svg"),
+                ("All files", "*.*")
+            ]
+        elif asset_type == "audio":
+            filetypes = [
+                ("Audio files", "*.mp3 *.wav *.m4a *.aac *.ogg"),
+                ("All files", "*.*")
+            ]
+        else:
+            filetypes = [("All files", "*.*")]
+        
+        filename = filedialog.askopenfilename(
+            title=f"Select {asset_type} file",
+            filetypes=filetypes
+        )
+        
+        if filename:
+            try:
+                # Create assets directory if it doesn't exist
+                assets_dir = os.path.join(os.getcwd(), "assets", asset_type)
+                os.makedirs(assets_dir, exist_ok=True)
+                
+                # Get the base filename
+                base_filename = os.path.basename(filename)
+                
+                # Copy file to assets directory
+                dest_path = os.path.join(assets_dir, base_filename)
+                
+                # If file already exists, ask user if they want to overwrite
+                if os.path.exists(dest_path):
+                    if not messagebox.askyesno("File Exists", f"{base_filename} already exists. Overwrite?"):
+                        return
+                
+                shutil.copy2(filename, dest_path)
+                
+                # Generate GitHub Pages URL
+                github_url = f"https://aaroncelestian.github.io/specimenpro-events/assets/{asset_type}/{base_filename}"
+                target_var.set(github_url)
+                
+                messagebox.showinfo("Success", f"File copied to assets/{asset_type}/\nURL set to GitHub Pages location")
+                
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to copy file: {str(e)}")
+    
     def browse_file(self, target_var):
-        """Browse for a file and update the target variable"""
+        """Browse for a file and update the target variable (legacy method)"""
         filename = filedialog.askopenfilename(
             title="Select file",
             filetypes=[
