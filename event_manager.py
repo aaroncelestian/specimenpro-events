@@ -172,6 +172,27 @@ class SpecimenProEventManager:
         self.event_vars["location"] = location_var
         row += 1
         
+        # Latitude
+        ttk.Label(event_frame, text="Latitude:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        latitude_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=latitude_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["latitude"] = latitude_var
+        row += 1
+        
+        # Longitude
+        ttk.Label(event_frame, text="Longitude:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        longitude_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=longitude_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["longitude"] = longitude_var
+        row += 1
+        
+        # Radius in Meters
+        ttk.Label(event_frame, text="Radius (meters):").grid(row=row, column=0, sticky=tk.W, pady=5)
+        radius_var = tk.StringVar()
+        ttk.Entry(event_frame, textvariable=radius_var).grid(row=row, column=1, sticky=(tk.W, tk.E), pady=5)
+        self.event_vars["radiusMeters"] = radius_var
+        row += 1
+        
         # Status
         ttk.Label(event_frame, text="Status:").grid(row=row, column=0, sticky=tk.W, pady=5)
         status_var = tk.StringVar()
@@ -332,6 +353,9 @@ class SpecimenProEventManager:
             "status": "draft",
             "type": "scavenger_hunt",
             "location": "Location",
+            "latitude": 0.0,
+            "longitude": 0.0,
+            "radiusMeters": 100,
             "imageUrl": None,
             "specimens": [],
             "badges": []
