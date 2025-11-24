@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2025-11-16T14:09:27.022205Z",
+  "lastUpdated": "2025-11-24T09:45:20.674617Z",
   "events": [
     {
       "id": "event-7e97ba0b",
@@ -59,6 +59,23 @@
           "requirementType": "collect_count"
         }
       ]
+    },
+    {
+      "id": "event-3d850e1a",
+      "title": "Zeolites!",
+      "description": "Event description",
+      "startDate": "2025-11-24T00:00:00Z",
+      "endDate": "2025-11-24T23:59:59Z",
+      "status": "ended",
+      "type": "scavenger_hunt",
+      "location": "Location",
+      "latitude": "0.0",
+      "longitude": "0.0",
+      "radiusMeters": "100",
+      "alwaysVisible": true,
+      "imageUrl": null,
+      "specimens": [],
+      "badges": []
     }
   ]
 }
