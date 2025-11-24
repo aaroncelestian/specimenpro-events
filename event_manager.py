@@ -328,6 +328,10 @@ class SpecimenProEventManager:
                 var[0].set(self.current_event.get(field, ""))
                 var[1].delete(1.0, tk.END)
                 var[1].insert(1.0, self.current_event.get(field, ""))
+            elif field == "alwaysVisible":
+                # Handle null/true values: null or False -> unchecked, True -> checked
+                value = self.current_event.get(field)
+                var.set(value is True)
             else:
                 var.set(self.current_event.get(field, ""))
         
@@ -363,7 +367,7 @@ class SpecimenProEventManager:
             "latitude": 0.0,
             "longitude": 0.0,
             "radiusMeters": 100,
-            "alwaysVisible": False,
+            "alwaysVisible": None,
             "imageUrl": None,
             "specimens": [],
             "badges": []
@@ -397,6 +401,9 @@ class SpecimenProEventManager:
         for field, var in self.event_vars.items():
             if field == "description":
                 self.current_event[field] = var[1].get(1.0, tk.END).strip()
+            elif field == "alwaysVisible":
+                # Save as true if checked, null if unchecked
+                self.current_event[field] = True if var.get() else None
             else:
                 self.current_event[field] = var.get()
         
