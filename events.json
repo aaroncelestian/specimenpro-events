@@ -14,6 +14,7 @@
       "latitude": 34.0171,
       "longitude": -118.2889,
       "radiusMeters": 500,
+      "alwaysVisible": false,
       "imageUrl": null,
       "specimens": [],
       "badges": []
@@ -30,6 +31,7 @@
       "latitude": 34.0171,
       "longitude": -118.2889,
       "radiusMeters": 300,
+      "alwaysVisible": false,
       "imageUrl": null,
       "specimens": [
         {

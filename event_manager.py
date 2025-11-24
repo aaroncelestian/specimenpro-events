@@ -193,6 +193,13 @@ class SpecimenProEventManager:
         self.event_vars["radiusMeters"] = radius_var
         row += 1
         
+        # Always Visible
+        ttk.Label(event_frame, text="Always Visible:").grid(row=row, column=0, sticky=tk.W, pady=5)
+        always_visible_var = tk.BooleanVar()
+        ttk.Checkbutton(event_frame, variable=always_visible_var).grid(row=row, column=1, sticky=tk.W, pady=5)
+        self.event_vars["alwaysVisible"] = always_visible_var
+        row += 1
+        
         # Status
         ttk.Label(event_frame, text="Status:").grid(row=row, column=0, sticky=tk.W, pady=5)
         status_var = tk.StringVar()
@@ -356,6 +363,7 @@ class SpecimenProEventManager:
             "latitude": 0.0,
             "longitude": 0.0,
             "radiusMeters": 100,
+            "alwaysVisible": False,
             "imageUrl": None,
             "specimens": [],
             "badges": []
