@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpecimenPro Event Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="datetime-local"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .item-list {
+            margin-top: 20px;
+        }
+
+        .item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-info p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .export-section {
+            background: #e8f5e9;
+            border: 2px solid #28a745;
+        }
+
+        .export-section h2 {
+            color: #28a745;
+            border-bottom-color: #28a745;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 SpecimenPro Event Creator</h1>
+            <p>Create amazing events with specimens and badges</p>
+        </div>
+
+        <div class="content">
+            <!-- Event Information -->
+            <div class="section">
+                <h2>📋 Event Information</h2>
+                
+                <div class="form-group">
+                    <label for="title">Event Title *</label>
+                    <input type="text" id="title" placeholder="e.g., Minerals of India" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" placeholder="Describe your event..."></textarea>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="type">Event Type *</label>
+                        <select id="type">
+                            <option value="exhibit">Exhibit</option>
+                            <option value="scavenger_hunt">Scavenger Hunt</option>
+                            <option value="competition">Competition</option>
+                            <option value="workshop">Workshop</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status *</label>
+                        <select id="status">
+                            <option value="draft">Draft</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="active">Active</option>
+                            <option value="ended">Ended</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="startDate">Start Date & Time *</label>
+                        <input type="datetime-local" id="startDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate">End Date & Time *</label>
+                        <input type="datetime-local" id="endDate">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Information -->
+            <div class="section">
+                <h2>📍 Location Information</h2>
+                
+                <div class="form-group">
+                    <label for="location">Location Name *</label>
+                    <input type="text" id="location" placeholder="e.g., Natural History Museum of Los Angeles County">
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="latitude">Latitude *</label>
+                        <input type="text" id="latitude" placeholder="e.g., 34.0171">
+                        <div class="help-text">You can find this on Google Maps</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="longitude">Longitude *</label>
+                        <input type="text" id="longitude" placeholder="e.g., -118.2889">
+                        <div class="help-text">You can find this on Google Maps</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="radiusMeters">Search Radius (meters) *</label>
+                    <input type="number" id="radiusMeters" placeholder="e.g., 500" value="500">
+                    <div class="help-text">How far from the location should the event be visible? (1000m = 1km)</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="alwaysVisible">
+                        <label for="alwaysVisible" style="margin-bottom: 0;">Always show this event (ignore location filters)</label>
+                    </div>
+                    <div class="help-text">Check this for important events that should always be visible</div>
+                </div>
+            </div>
+
+            <!-- Specimens -->
+            <div class="section">
+                <h2>🔬 Specimens</h2>
+                <p style="margin-bottom: 15px; color: #666;">Add specimens that participants can collect during this event</p>
+                
+                <button class="btn btn-primary" onclick="openSpecimenModal()">+ Add Specimen</button>
+                
+                <div id="specimenList" class="item-list"></div>
+            </div>
+
+            <!-- Badges -->
+            <div class="section">
+                <h2>🏆 Badges</h2>
+                <p style="margin-bottom: 15px; color: #666;">Add achievement badges participants can earn</p>
+                
+                <button class="btn btn-primary" onclick="openBadgeModal()">+ Add Badge</button>
+                
+                <div id="badgeList" class="item-list"></div>
+            </div>
+
+            <!-- Export -->
+            <div class="section export-section">
+                <h2>💾 Export Event</h2>
+                <p style="margin-bottom: 15px; color: #666;">When you're done, click the button below to download your event file. Send this file to the event manager!</p>
+                
+                <button class="btn btn-success" onclick="exportEvent()">📥 Download Event File</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Specimen Modal -->
+    <div id="specimenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn" onclick="closeSpecimenModal()">&times;</span>
+                <h3>Add Specimen</h3>
+            </div>
+
+            <div class="form-group">
+                <label for="specName">Specimen Name *</label>
+                <input type="text" id="specName" placeholder="e.g., Heulandite">
+            </div>
+
+            <div class="form-group">
+                <label for="specLocality">Locality *</label>
+                <input type="text" id="specLocality" placeholder="e.g., Poona, India">
+            </div>
+
+            <div class="form-group">
+                <label for="specDescription">Description</label>
+                <textarea id="specDescription" placeholder="Brief description of the specimen"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="specRarity">Rarity</label>
+                <select id="specRarity">
+                    <option value="common">Common</option>
+                    <option value="uncommon">Uncommon</option>
+                    <option value="rare">Rare</option>
+                    <option value="legendary">Legendary</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="specComposition">Chemical Composition</label>
+                <input type="text" id="specComposition" placeholder="e.g., SiO₂">
+            </div>
+
+            <div class="form-group">
+                <label for="specFunFacts">Fun Facts</label>
+                <textarea id="specFunFacts" placeholder="Interesting facts about this specimen"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="specStory">Story</label>
+                <textarea id="specStory" placeholder="Tell the story of this specimen" style="min-height: 150px;"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="specPhotoUrl">Photo URL</label>
+                <input type="text" id="specPhotoUrl" placeholder="https://example.com/photo.jpg">
+            </div>
+
+            <div class="form-group">
+                <label for="specAudioUrl">Audio Note URL</label>
+                <input type="text" id="specAudioUrl" placeholder="https://example.com/audio.mp3">
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="addSpecimen()">Add Specimen</button>
+                <button class="btn btn-secondary" onclick="closeSpecimenModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badge Modal -->
+    <div id="badgeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn" onclick="closeBadgeModal()">&times;</span>
+                <h3>Add Badge</h3>
+            </div>
+
+            <div class="form-group">
+                <label for="badgeTitle">Badge Title *</label>
+                <input type="text" id="badgeTitle" placeholder="e.g., First Scan!">
+            </div>
+
+            <div class="form-group">
+                <label for="badgeDescription">Description *</label>
+                <textarea id="badgeDescription" placeholder="What did they accomplish?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="badgeIcon">Icon Name</label>
+                <input type="text" id="badgeIcon" placeholder="e.g., star.fill" value="star.fill">
+                <div class="help-text">SF Symbols name (e.g., star.fill, trophy.fill, checkmark.seal.fill)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="badgeColor">Color</label>
+                <select id="badgeColor">
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="red">Red</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="purple">Purple</option>
+                    <option value="orange">Orange</option>
+                    <option value="pink">Pink</option>
+                </select>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="badgeRequirement">Requirement Number *</label>
+                    <input type="number" id="badgeRequirement" placeholder="e.g., 1" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="badgeRequirementType">Requirement Type *</label>
+                    <select id="badgeRequirementType">
+                        <option value="collect_count">Collect Count</option>
+                        <option value="visit_count">Visit Count</option>
+                        <option value="time_spent">Time Spent</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="addBadge()">Add Badge</button>
+                <button class="btn btn-secondary" onclick="closeBadgeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let specimens = [];
+        let badges = [];
+
+        function generateId(prefix) {
+            return `${prefix}-${Math.random().toString(16).substr(2, 8)}`;
+        }
+
+        function openSpecimenModal() {
+            document.getElementById('specimenModal').classList.add('active');
+        }
+
+        function closeSpecimenModal() {
+            document.getElementById('specimenModal').classList.remove('active');
+            clearSpecimenForm();
+        }
+
+        function clearSpecimenForm() {
+            document.getElementById('specName').value = '';
+            document.getElementById('specLocality').value = '';
+            document.getElementById('specDescription').value = '';
+            document.getElementById('specRarity').value = 'common';
+            document.getElementById('specComposition').value = '';
+            document.getElementById('specFunFacts').value = '';
+            document.getElementById('specStory').value = '';
+            document.getElementById('specPhotoUrl').value = '';
+            document.getElementById('specAudioUrl').value = '';
+        }
+
+        function addSpecimen() {
+            const name = document.getElementById('specName').value.trim();
+            const locality = document.getElementById('specLocality').value.trim();
+
+            if (!name || !locality) {
+                alert('Please fill in at least the name and locality!');
+                return;
+            }
+
+            const specimen = {
+                id: generateId('spec'),
+                name: name,
+                locality: locality,
+                description: document.getElementById('specDescription').value.trim(),
+                rarity: document.getElementById('specRarity').value,
+                photoUrl: document.getElementById('specPhotoUrl').value.trim() || "",
+                audioNoteUrl: document.getElementById('specAudioUrl').value.trim() || "",
+                composition: document.getElementById('specComposition').value.trim(),
+                funFacts: document.getElementById('specFunFacts').value.trim(),
+                story: document.getElementById('specStory').value.trim(),
+                imageUrl: null
+            };
+
+            specimens.push(specimen);
+            renderSpecimens();
+            closeSpecimenModal();
+        }
+
+        function removeSpecimen(index) {
+            if (confirm('Remove this specimen?')) {
+                specimens.splice(index, 1);
+                renderSpecimens();
+            }
+        }
+
+        function renderSpecimens() {
+            const list = document.getElementById('specimenList');
+            if (specimens.length === 0) {
+                list.innerHTML = '<p style="color: #999; font-style: italic;">No specimens added yet</p>';
+                return;
+            }
+
+            list.innerHTML = specimens.map((spec, index) => `
+                <div class="item">
+                    <div class="item-info">
+                        <h4>${spec.name}</h4>
+                        <p>${spec.locality} • ${spec.rarity}</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="removeSpecimen(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function openBadgeModal() {
+            document.getElementById('badgeModal').classList.add('active');
+        }
+
+        function closeBadgeModal() {
+            document.getElementById('badgeModal').classList.remove('active');
+            clearBadgeForm();
+        }
+
+        function clearBadgeForm() {
+            document.getElementById('badgeTitle').value = '';
+            document.getElementById('badgeDescription').value = '';
+            document.getElementById('badgeIcon').value = 'star.fill';
+            document.getElementById('badgeColor').value = 'blue';
+            document.getElementById('badgeRequirement').value = '1';
+            document.getElementById('badgeRequirementType').value = 'collect_count';
+        }
+
+        function addBadge() {
+            const title = document.getElementById('badgeTitle').value.trim();
+            const description = document.getElementById('badgeDescription').value.trim();
+
+            if (!title || !description) {
+                alert('Please fill in at least the title and description!');
+                return;
+            }
+
+            const badge = {
+                id: generateId('badge'),
+                title: title,
+                description: description,
+                icon: document.getElementById('badgeIcon').value.trim(),
+                color: document.getElementById('badgeColor').value,
+                requirement: parseInt(document.getElementById('badgeRequirement').value),
+                requirementType: document.getElementById('badgeRequirementType').value
+            };
+
+            badges.push(badge);
+            renderBadges();
+            closeBadgeModal();
+        }
+
+        function removeBadge(index) {
+            if (confirm('Remove this badge?')) {
+                badges.splice(index, 1);
+                renderBadges();
+            }
+        }
+
+        function renderBadges() {
+            const list = document.getElementById('badgeList');
+            if (badges.length === 0) {
+                list.innerHTML = '<p style="color: #999; font-style: italic;">No badges added yet</p>';
+                return;
+            }
+
+            list.innerHTML = badges.map((badge, index) => `
+                <div class="item">
+                    <div class="item-info">
+                        <h4>${badge.title}</h4>
+                        <p>${badge.description} • ${badge.requirement} ${badge.requirementType}</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="removeBadge(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function exportEvent() {
+            // Validate required fields
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const latitude = document.getElementById('latitude').value.trim();
+            const longitude = document.getElementById('longitude').value.trim();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!title || !description || !location || !latitude || !longitude || !startDate || !endDate) {
+                alert('Please fill in all required fields (marked with *)');
+                return;
+            }
+
+            // Format dates to match the expected format
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                return date.toUTCString().replace('GMT', 'GMT');
+            };
+
+            const event = {
+                id: generateId('event'),
+                title: title,
+                description: description,
+                startDate: formatDate(startDate),
+                endDate: formatDate(endDate),
+                status: document.getElementById('status').value,
+                type: document.getElementById('type').value,
+                location: location,
+                latitude: latitude,
+                longitude: longitude,
+                radiusMeters: document.getElementById('radiusMeters').value,
+                alwaysVisible: document.getElementById('alwaysVisible').checked ? true : null,
+                imageUrl: null,
+                specimens: specimens,
+                badges: badges
+            };
+
+            // Create and download JSON file
+            const dataStr = JSON.stringify(event, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${title.replace(/\s+/g, '_').toLowerCase()}_event.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('Event file downloaded! Send this file to your event manager.');
+        }
+
+        // Initialize
+        renderSpecimens();
+        renderBadges();
+    </script>
+</body>
+</html>

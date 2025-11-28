@@ -103,6 +103,7 @@ class SpecimenProEventManager:
         button_frame.pack(fill=tk.X, pady=(10, 0))
         
         ttk.Button(button_frame, text="New Event", command=self.new_event).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(button_frame, text="Import Event", command=self.import_event).pack(side=tk.LEFT, padx=(0, 5))
         ttk.Button(button_frame, text="Delete Event", command=self.delete_event).pack(side=tk.LEFT, padx=(0, 5))
         ttk.Button(button_frame, text="Save All", command=self.save_events).pack(side=tk.RIGHT)
         
@@ -380,6 +381,70 @@ class SpecimenProEventManager:
         self.events_listbox.selection_clear(0, tk.END)
         self.events_listbox.selection_set(tk.END)
         self.on_event_select(None)
+    
+    def import_event(self):
+        """Import an event from a JSON file"""
+        file_path = filedialog.askopenfilename(
+            title="Select Event File",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+        )
+        
+        if not file_path:
+            return
+        
+        try:
+            with open(file_path, 'r') as f:
+                imported_event = json.load(f)
+            
+            # Validate that it has required fields
+            required_fields = ['title', 'description', 'startDate', 'endDate', 'status', 'type', 'location']
+            missing_fields = [field for field in required_fields if field not in imported_event]
+            
+            if missing_fields:
+                messagebox.showerror("Invalid Event File", 
+                    f"The file is missing required fields: {', '.join(missing_fields)}")
+                return
+            
+            # Check if event ID already exists
+            if any(e['id'] == imported_event.get('id') for e in self.events_data['events']):
+                if not messagebox.askyesno("Duplicate Event", 
+                    f"An event with ID '{imported_event.get('id')}' already exists. Import anyway with a new ID?"):
+                    return
+                # Generate new ID
+                imported_event['id'] = f"event-{uuid.uuid4().hex[:8]}"
+            
+            # Ensure all required fields exist with defaults
+            if 'latitude' not in imported_event:
+                imported_event['latitude'] = "0.0"
+            if 'longitude' not in imported_event:
+                imported_event['longitude'] = "0.0"
+            if 'radiusMeters' not in imported_event:
+                imported_event['radiusMeters'] = "100"
+            if 'alwaysVisible' not in imported_event:
+                imported_event['alwaysVisible'] = None
+            if 'imageUrl' not in imported_event:
+                imported_event['imageUrl'] = None
+            if 'specimens' not in imported_event:
+                imported_event['specimens'] = []
+            if 'badges' not in imported_event:
+                imported_event['badges'] = []
+            
+            # Add to events
+            self.events_data['events'].append(imported_event)
+            self.refresh_events_list()
+            
+            # Select the imported event
+            self.events_listbox.selection_clear(0, tk.END)
+            self.events_listbox.selection_set(tk.END)
+            self.on_event_select(None)
+            
+            messagebox.showinfo("Success", 
+                f"Event '{imported_event['title']}' imported successfully!\n\nDon't forget to click 'Save All' to save changes.")
+            
+        except json.JSONDecodeError:
+            messagebox.showerror("Invalid File", "The selected file is not a valid JSON file.")
+        except Exception as e:
+            messagebox.showerror("Import Error", f"Failed to import event: {str(e)}")
     
     def delete_event(self):
         """Delete the current event"""
